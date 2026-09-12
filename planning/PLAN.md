@@ -454,3 +454,33 @@ The container is designed to deploy to AWS App Runner, Render, or any container 
 - Portfolio visualization: heatmap renders with correct colors, P&L chart has data points
 - AI chat (mocked): send a message, receive a response, trade execution appears inline
 - SSE resilience: disconnect and verify reconnection
+
+---
+
+## 13. Doc Review — Questions, Clarifications & Simplification Opportunities
+
+### Questions & Clarifications
+
+**Section 6 — SSE Stream scope**: The plan says the stream pushes updates for "all tickers known to the system," then adds "in the single-user model this is equivalent to the user's watchlist." These should be the same thing — clarify whether the stream is scoped to the watchlist or to a broader universe. If it's the watchlist, say so directly.
+
+**Section 6 / Section 10 — Main chart data source**: Sparklines accumulate from SSE since page load, which is fine for the watchlist. But the main chart area is expected to show price history for a selected ticker. There's no price history REST endpoint defined in Section 8. Either add `GET /api/prices/{ticker}/history` or clarify that the main chart also uses SSE-accumulated data (and resets on refresh — which should be stated explicitly as acceptable).
+
+**Section 9 — Model ID**: The plan says to use `openrouter/openai/gpt-oss-120b` via Cerebras. Verify this model ID is correct on OpenRouter — it looks like it may be a placeholder. The cerebras-inference skill should be the source of truth here; reconcile the two.
+
+**Section 10 — Charting library contradiction**: "Canvas-based charting library preferred (Lightweight Charts or Recharts)" — Recharts is SVG-based, not canvas-based. Pick one: Lightweight Charts (canvas, better performance for live data) is the stronger choice for a trading terminal.
+
+**Section 9 — Watchlist `action` values**: The structured output example only shows `"action": "add"`. Confirm `"action": "remove"` is also supported and add it to the example schema for clarity.
+
+**Section 7 — Sparkline reset on refresh**: Sparklines are built from SSE data accumulated since page load. This means they reset on browser refresh. Is that acceptable for the course demo? If so, say so. If not, a price history endpoint is needed.
+
+### Simplification Opportunities
+
+**`user_id` columns**: Every table has a `user_id` column defaulting to `"default"` for future multi-user support. This adds boilerplate to every query with zero near-term payoff. For a course capstone with no auth, remove the columns now and note multi-user as a future concern. Simpler schema, simpler queries.
+
+**`portfolio_snapshots` background task**: The 30-second polling snapshot task adds a background worker. Consider simplifying to snapshot-on-trade only. The P&L chart would still be meaningful and the implementation would be much simpler.
+
+**Abstract market data interface**: The simulator/Massive two-implementation pattern with a shared interface is good design but significant complexity. If Massive is optional and most users won't use it, build the simulator concretely first and stub the Massive path as a stretch goal with a clear TODO comment — rather than designing the abstraction upfront.
+
+**E2E test infrastructure**: `docker-compose.test.yml` with a separate Playwright container is production-grade but heavyweight for a course project. Running Playwright locally against the dev server (`uvicorn` + `next dev`) is simpler and faster for the course context. The Docker-based approach can stay as a stretch goal.
+
+**`chat_messages.actions` JSON column**: Storing executed actions as a JSON blob in SQLite is awkward to query and validate. Since the trades and watchlist tables already record the ground truth, consider dropping the `actions` column and deriving action summaries from those tables when needed — or keeping it only as a display hint string, not structured JSON.
