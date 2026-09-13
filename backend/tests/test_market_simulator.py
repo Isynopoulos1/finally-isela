@@ -181,6 +181,9 @@ def test_tick_change_pct_is_relative_to_pinned_close():
     provider._closes = {"AAPL": 200.0}
     provider._tick()
     update = provider.get_prices()["AAPL"]
+    # change_pct is computed from full-precision new_price before rounding to cents,
+    # so it can differ from (update.price - close) / close * 100 by up to ~0.005.
+    # Use abs=0.01 to verify the close used is 200.0 (giving ~-50%), not 100.0 (giving ~0%).
     assert update.change_pct == pytest.approx(
-        (update.price - 200.0) / 200.0 * 100, rel=1e-6
+        (update.price - 200.0) / 200.0 * 100, abs=0.01
     )

@@ -2,7 +2,7 @@ import httpx
 import pytest
 
 from market.interface import PriceUpdate
-from market.massive import RATE_LIMIT_BACKOFF, MassiveProvider
+from market.massive import BASE_URL, RATE_LIMIT_BACKOFF, MassiveProvider
 
 SNAPSHOT = {
     "ticker": "AAPL",
@@ -14,7 +14,11 @@ SNAPSHOT = {
 
 
 def client_returning(response: httpx.Response) -> httpx.AsyncClient:
-    return httpx.AsyncClient(transport=httpx.MockTransport(lambda _: response))
+    # base_url is required so _poll_once can resolve the relative SNAPSHOT_PATH
+    return httpx.AsyncClient(
+        base_url=BASE_URL,
+        transport=httpx.MockTransport(lambda _: response),
+    )
 
 
 # --- _parse (pure, no network) ---------------------------------------------
@@ -134,9 +138,21 @@ async def test_poll_loop_stops_after_bad_key(monkeypatch):
     provider = MassiveProvider("bad", interval=0)
     provider._tickers = ["AAPL"]
 
-    monkeypatch.setattr(
-        httpx, "AsyncClient", lambda *a, **k: client_returning(httpx.Response(403))
-    )
+    # Use a self-contained fake client to avoid infinite recursion that occurs
+    # when monkeypatching httpx.AsyncClient globally (client_returning also calls it).
+    class FakeClient:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            pass
+
+        async def get(self, *args, **kwargs):
+            return httpx.Response(403)
+
+    import market.massive as mm
+
+    monkeypatch.setattr(mm.httpx, "AsyncClient", lambda *a, **k: FakeClient())
     await provider._poll_loop()
     assert provider._disabled is True
 
