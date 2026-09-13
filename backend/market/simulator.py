@@ -94,11 +94,28 @@ class SimulatorProvider(MarketDataProvider):
         return dict(self._cache)
 
     async def update_tickers(self, tickers: list[str]) -> None:
+        new_tickers = [t for t in tickers if t not in self._prices]
         self._seed(tickers)
         for ticker in set(self._prices) - set(tickers):
             del self._prices[ticker]
             del self._closes[ticker]
             self._cache.pop(ticker, None)
+        # Populate cache immediately for new tickers so get_prices() reflects them
+        # before the next background tick fires.
+        if new_tickers:
+            now = time.time()
+            market_z = random.gauss(0, 1)
+            for ticker in new_tickers:
+                price = self._prices[ticker]
+                new_price = max(gbm_step(maybe_event(price), market_z), MIN_PRICE)
+                self._prices[ticker] = new_price
+                self._cache[ticker] = PriceUpdate(
+                    ticker=ticker,
+                    price=round(new_price, 2),
+                    prev_price=round(price, 2),
+                    change_pct=round((new_price - self._closes[ticker]) / self._closes[ticker] * 100, 3),
+                    timestamp=now,
+                )
 
     def _seed(self, tickers: list[str]) -> None:
         """Give any unknown ticker a realistic starting price and previous close."""
