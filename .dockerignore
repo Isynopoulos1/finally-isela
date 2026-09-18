@@ -1,0 +1,27 @@
+.git
+.github
+.claude
+.claude-plugin
+planning
+independent-reviewer
+README.md
+LICENSE
+test
+
+# Node
+frontend/node_modules
+frontend/.next
+frontend/out
+
+# Python
+backend/.venv
+backend/**/__pycache__
+backend/**/*.pyc
+backend/.pytest_cache
+backend/.ruff_cache
+backend/tests
+
+# Runtime data / secrets
+db/*.db
+db/*.db-journal
+.env
