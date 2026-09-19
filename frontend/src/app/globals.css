@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0b0e14;
+  --color-panel: #10141f;
+  --color-panel-raised: #161c2b;
+  --color-border: #232a3a;
+  --color-text: #e7eaf0;
+  --color-text-muted: #7d8598;
+  --color-yellow: #ecad0a;
+  --color-blue: #209dd7;
+  --color-purple: #753991;
+  --color-up: #3ecf8e;
+  --color-down: #f2545b;
+
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-data), ui-monospace, "SFMono-Regular", monospace;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+::selection {
+  background-color: var(--color-blue);
+  color: var(--color-bg);
+}
+
+@keyframes flash-up {
+  from {
+    background-color: color-mix(in srgb, var(--color-up) 35%, transparent);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+
+@keyframes flash-down {
+  from {
+    background-color: color-mix(in srgb, var(--color-down) 35%, transparent);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+
+.flash-up {
+  animation: flash-up 500ms ease-out;
+}
+
+.flash-down {
+  animation: flash-down 500ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flash-up,
+  .flash-down {
+    animation: none;
+  }
+}

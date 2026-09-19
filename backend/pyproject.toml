@@ -4,11 +4,18 @@ version = "0.1.0"
 description = "FinAlly backend — FastAPI trading workstation server"
 requires-python = ">=3.12"
 dependencies = [
+    "fastapi>=0.141.1",
     "httpx>=0.27",
+    "litellm>=1.101.0",
+    "openai>=2.54.0",
+    "pydantic>=2.13.5",
+    "python-dotenv>=1.2.3",
+    "uvicorn[standard]>=0.53.0",
 ]
 
 [dependency-groups]
 dev = [
+    "httpx2>=2.13.0",
     "pytest>=8.0",
     "pytest-asyncio>=0.24",
     "ruff>=0.6",
@@ -27,4 +34,4 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["market"]
+packages = ["market", "db", "api", "portfolio", "llm"]
