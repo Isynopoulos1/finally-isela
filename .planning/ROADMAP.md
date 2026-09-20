@@ -29,7 +29,12 @@ FinAlly is built as six vertical slices, each one adding a capability the user c
   2. On a fresh volume the backend creates the schema and seeds data with no manual step — a default profile with $10,000 cash and the ten default tickers (AAPL, GOOGL, MSFT, AMZN, TSLA, NVDA, META, JPM, V, NFLX).
   3. Stopping with the stop script and starting again keeps the same cash, positions and watchlist, because `db/finally.db` lives on the named volume mounted at `/app/db`.
   4. `GET /api/health` returns a healthy response, and the app reads `.env` from the project root with `.env.example` committed and `db/finally.db` gitignored.
-**Plans**: TBD
+**Plans:** 3 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Prove the container path end-to-end and add the HEALTHCHECK (DEP-01, DEP-02, DEP-05, DB-01..04, SYS-01)
+- [ ] 01-02-PLAN.md — Rewrite the mac start/stop scripts and prove the full lifecycle (DEP-03, DEP-02, DB-04)
+- [ ] 01-03-PLAN.md — Mirror the Windows scripts and document the database reset (DEP-04, DEP-05)
 
 ### Phase 2: Live Prices Streaming
 **Goal**: The user opens the app and watches the default tickers tick live in a dark, data-dense terminal UI
@@ -105,7 +110,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. One-Command Start | 0/TBD | Not started | - |
+| 1. One-Command Start | 0/3 | Planned | - |
 | 2. Live Prices Streaming | 0/TBD | Not started | - |
 | 3. Watchlist Control & Ticker Detail | 0/TBD | Not started | - |
 | 4. Portfolio & Trading | 0/TBD | Not started | - |
