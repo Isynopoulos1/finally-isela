@@ -68,7 +68,7 @@ FinAlly is built as six vertical slices, each one adding a capability the user c
   2. Selling fills instantly at the current price: cash rises, quantity drops, average cost stays correct, and a position that reaches zero disappears from the table.
   3. Buying beyond available cash or selling more shares than owned is rejected with a clear error and leaves cash and positions untouched, with trade math and edge cases pinned by unit tests.
   4. The header shows live total portfolio value, cash balance, and a connection dot that is green when connected, yellow when reconnecting and red when disconnected.
-  5. The heatmap sizes each position by portfolio weight and colors it by P&L, and the P&L chart plots total portfolio value over time from snapshots recorded every 30 seconds and immediately after each trade.
+  5. The heatmap sizes each position by portfolio weight and colors it by P&L, and the P&L chart plots total portfolio value over time from snapshots recorded at seed and immediately after each trade.
 **Plans**: TBD
 **UI hint**: yes
 

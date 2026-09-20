@@ -28,7 +28,7 @@ Every capability in `planning/PLAN.md`. Existing code is reused where it satisfi
 
 - [ ] **DB-01**: On first start (file missing, empty or tables absent) the backend creates the schema and seeds data with no manual step
 - [ ] **DB-02**: Seed data is one default profile with $10,000 cash and a watchlist of AAPL, GOOGL, MSFT, AMZN, TSLA, NVDA, META, JPM, V, NFLX
-- [ ] **DB-03**: SQLite holds `users_profile`, `watchlist`, `positions`, `trades`, `portfolio_snapshots` and `chat_messages` as specified in PLAN.md §7
+- [ ] **DB-03**: SQLite holds `users_profile` (singleton row), `watchlist`, `positions`, `trades`, `portfolio_snapshots` and `chat_messages` per `planning/DECISIONS.md` (no `user_id` columns; `chat_messages.action_summary` is a nullable TEXT summary, not a JSON `actions` column)
 - [ ] **DB-04**: The database file `db/finally.db` persists across container restarts
 
 ### Portfolio and Trading
@@ -40,7 +40,7 @@ Every capability in `planning/PLAN.md`. Existing code is reused where it satisfi
 - [ ] **PORT-05**: A buy exceeding available cash is rejected with a clear error
 - [ ] **PORT-06**: A sell exceeding shares owned is rejected with a clear error
 - [ ] **PORT-07**: Average cost updates correctly on buys, and a position is removed when its quantity reaches zero
-- [ ] **PORT-08**: A portfolio snapshot is recorded every 30 seconds and immediately after each trade
+- [ ] **PORT-08**: A portfolio snapshot is recorded once at database seed and immediately after each trade (no background timer, per `planning/DECISIONS.md` #7)
 - [ ] **PORT-09**: `GET /api/portfolio/history` returns the snapshots for the P&L chart
 
 ### Watchlist
