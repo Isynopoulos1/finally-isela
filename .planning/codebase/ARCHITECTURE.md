@@ -1,4 +1,9 @@
+---
+last_mapped_commit: 85c7a055767e7430f4fbc22913eacde18041a246
+last_mapped_at: 2026-09-20
+---
 <!-- refreshed: 2026-09-20 -->
+
 # Architecture
 
 **Analysis Date:** 2026-09-20
@@ -100,6 +105,7 @@
 **Overall:** Layered monolith with a clean separation of concerns: API routes → business logic → data access. Market data abstraction decouples price source. SSE for one-way server-push. Structured outputs from LLM enable auto-execution.
 
 **Key Characteristics:**
+
 - **Single Docker container**: Frontend static export served by FastAPI; no CORS, one port, simple deployment
 - **Market data abstraction**: Two implementations (simulator and Massive) behind a common interface; provider selected at startup via environment variable
 - **Repository pattern**: Plain functions (no ORM) for data access; each write opens connection and commits
@@ -111,6 +117,7 @@
 ## Layers
 
 **Presentation Layer (Frontend):**
+
 - Purpose: React SPA running in the browser; renders all UI, manages user interactions, accumulates price history
 - Location: `frontend/src/`
 - Contains: Components, hooks, API client, type definitions, utilities
@@ -118,6 +125,7 @@
 - Used by: End user in browser
 
 **API/Route Layer:**
+
 - Purpose: FastAPI routers; HTTP request → validation → delegation to business logic
 - Location: `backend/api/`
 - Contains: Health, portfolio, trade, watchlist, stream, chat routers
@@ -125,6 +133,7 @@
 - Used by: Frontend (HTTP/SSE client)
 
 **Business Logic Layer:**
+
 - Purpose: Trade validation, portfolio context aggregation, LLM integration
 - Location: `backend/portfolio/`, `backend/llm/`
 - Contains: Trade execution logic, portfolio context builder, LLM prompt construction, mock responses
@@ -132,6 +141,7 @@
 - Used by: API routes, tests
 
 **Data Access Layer:**
+
 - Purpose: SQLite operations; isolation of SQL from business logic
 - Location: `backend/db/repository.py`
 - Contains: Pure functions for CRUD operations on all tables
@@ -139,6 +149,7 @@
 - Used by: Business logic, API routes
 
 **Market Data Layer:**
+
 - Purpose: Abstraction of price sources; provides current prices and manages background update task
 - Location: `backend/market/`
 - Contains: MarketDataProvider interface, SimulatorProvider, MassiveProvider, factory
@@ -204,6 +215,7 @@
 8. Return complete response (message, trade results, watchlist results) to frontend
 
 **State Management:**
+
 - Backend: Synchronous, single-threaded SQLite; no intermediate cache; all state lives in database
 - Frontend: React component state; price history in `usePriceStream` hook; portfolio/watchlist state in page component; synced via API polling (4s for portfolio, 10s for history)
 - Market data: In-memory cache in provider instance; GBM state in simulator; persists only for the lifetime of the provider task
@@ -211,24 +223,28 @@
 ## Key Abstractions
 
 **MarketDataProvider:**
+
 - Purpose: Abstract price source; enables swapping simulator ↔ Massive without changing downstream code
 - Examples: `backend/market/simulator.py:SimulatorProvider`, `backend/market/massive.py:MassiveProvider`
 - Pattern: ABC with abstract methods; concrete implementations override `start()`, `stop()`, `get_prices()`, `update_tickers()`
 - Ensures: Consistent interface for price queries and background task management
 
 **PriceUpdate:**
+
 - Purpose: Immutable data class representing a single price observation
 - Examples: Yielded by simulator tick; returned by provider.get_prices()
 - Pattern: Frozen dataclass (hashable, thread-safe conceptually though not needed here)
 - Fields: ticker, price, prev_price, change_pct, timestamp
 
 **ChatCompletion:**
+
 - Purpose: Structured output from LLM; validated at parse time
 - Examples: `backend/llm/schema.py:ChatCompletion`
 - Pattern: Pydantic BaseModel with nested ChatTrade and WatchlistChange models
 - Ensures: Type-safe access to message, trades, and watchlist_changes; failures during parsing caught early
 
 **TradeError:**
+
 - Purpose: User-facing trade validation exception
 - Examples: "Insufficient cash", "Invalid side", "No live price"
 - Pattern: Custom exception with message safe to return in HTTP 400 response
@@ -237,41 +253,49 @@
 ## Entry Points
 
 **Browser Entry Point:**
+
 - Location: `/` (root path)
 - Triggers: User navigates to `http://localhost:8000`
 - Responsibilities: FastAPI serves static `index.html` from frontend build; browser loads SPA; hooks initialize (price stream, initial data load)
 
 **API Health Check:**
+
 - Location: `backend/api/health.py:get_health()`
 - Triggers: GET `/api/health`
 - Responsibilities: Returns `{"status": "ok", "market_provider": "simulator" | "massive"}`; used by Docker for liveness probes
 
 **Portfolio Query:**
+
 - Location: `backend/api/portfolio.py:get_portfolio()`
 - Triggers: GET `/api/portfolio`
 - Responsibilities: Aggregates current positions, cash, total value, P&L from repository and prices
 
 **Trade Execution:**
+
 - Location: `backend/api/portfolio.py:post_trade()`
 - Triggers: POST `/api/portfolio/trade` with TradeRequest (ticker, quantity, side)
 - Responsibilities: Validates, executes, records, snapshots, returns updated context
 
 **Portfolio History:**
+
 - Location: `backend/api/portfolio.py:get_history()`
 - Triggers: GET `/api/portfolio/history`
 - Responsibilities: Returns array of portfolio snapshots for P&L chart
 
 **Watchlist Query/Modify:**
+
 - Location: `backend/api/watchlist.py:*`
 - Triggers: GET/POST/DELETE `/api/watchlist[/{ticker}]`
 - Responsibilities: List, add, remove tickers; update market provider on change
 
 **SSE Price Stream:**
+
 - Location: `backend/api/stream.py:stream_prices()`
 - Triggers: GET `/api/stream/prices` (opens EventSource connection)
 - Responsibilities: Yields price updates every 0.5s; server keeps connection open until client disconnects
 
 **Chat:**
+
 - Location: `backend/api/chat.py:chat()`
 - Triggers: POST `/api/chat` with ChatRequest (message)
 - Responsibilities: Loads context, calls LLM, executes trades/watchlist changes, stores history, returns response
@@ -302,6 +326,7 @@
 **Why it's wrong:** Portfolio inconsistency. E.g., position updated but cash not decremented; or cash decremented but trade not recorded.
 
 **Do this instead:** Wrap all writes in a SQLite transaction. Refactor repository functions to accept an optional connection parameter so caller can manage BEGIN/COMMIT. Or use a context manager pattern:
+
 ```python
 with transaction():
     repository.upsert_position(...)

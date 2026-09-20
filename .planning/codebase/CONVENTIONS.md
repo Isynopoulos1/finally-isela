@@ -1,3 +1,7 @@
+---
+last_mapped_commit: 85c7a055767e7430f4fbc22913eacde18041a246
+last_mapped_at: 2026-09-20
+---
 # Coding Conventions
 
 **Analysis Date:** 2026-09-20
@@ -7,12 +11,14 @@
 ### TypeScript/Frontend Files
 
 **Files:**
+
 - Components: PascalCase (e.g., `Watchlist.tsx`, `TradeBar.tsx`, `WatchlistRow.tsx`)
 - Utilities/Hooks: camelCase (e.g., `usePriceStream.ts`, `api.ts`, `types.ts`, `format.ts`)
 - Test files: Match source file name with `.test.tsx` suffix (e.g., `Watchlist.test.tsx`)
 - Directories: kebab-case for feature directories, `__tests__` for test colocations
 
 **Functions:**
+
 - React components: PascalCase, exported as named exports (e.g., `export function Watchlist(...)`)
 - Custom hooks: `use` prefix + PascalCase (e.g., `usePriceStream()`)
 - Event handlers: `handle` + event name in camelCase (e.g., `handleAdd`, `handleSelect`)
@@ -20,6 +26,7 @@
 - API methods: camelCase, object-organized (e.g., `api.getWatchlist()`, `api.addTicker()`)
 
 **Variables:**
+
 - State variables: camelCase (e.g., `ticker`, `quantity`, `pending`, `priceHistory`)
 - Type/interface variable names: PascalCase (e.g., `WatchlistItem`, `Position`)
 - Constants: camelCase or UPPER_SNAKE_CASE depending on context
@@ -27,6 +34,7 @@
   - `API_BASE` — configuration constant
 
 **Types:**
+
 - Use `interface` keyword (not `type`) for object shapes (e.g., `interface WatchlistProps { ... }`)
 - Use `type` for unions and literals (e.g., `type TradeSide = "buy" | "sell"`)
 - Import types with `import type { ... }` for tree-shaking
@@ -35,21 +43,25 @@
 ### Python/Backend Files
 
 **Files:**
+
 - Modules: snake_case (e.g., `simulator.py`, `schema.py`, `trading.py`)
 - Package directories: snake_case (e.g., `market/`, `portfolio/`, `api/`, `db/`, `llm/`)
 - Test files: `test_` prefix + module name (e.g., `test_market_simulator.py`, `test_db_schema.py`)
 
 **Functions:**
+
 - Functions: snake_case (e.g., `execute_trade()`, `build_portfolio_context()`, `normalize()`)
 - Private functions: `_` prefix (e.g., `_table_names()`, `_correlation()`)
 - Async functions: same snake_case convention (e.g., `async def start()`)
 
 **Classes:**
+
 - Classes: PascalCase (e.g., `TradeError`, `ChatCompletion`, `SimulatorProvider`)
 - Exception classes: Inherit from `Exception` with `Error` suffix (e.g., `class TradeError(Exception)`)
 - Pydantic models: PascalCase (e.g., `ChatCompletion`, `ChatTrade`, `WatchlistChange`)
 
 **Variables:**
+
 - Function/module-level: snake_case (e.g., `ticker`, `quantity`, `cash_balance`)
 - Constants: UPPER_SNAKE_CASE (e.g., `MIN_QUANTITY = 1e-9`, `ANNUAL_VOL`)
 - Logger: `log = logging.getLogger(__name__)`
@@ -59,6 +71,7 @@
 ### Formatting
 
 **Frontend (TypeScript/React):**
+
 - No `.prettierrc` configured; relies on ESLint for style enforcement
 - ESLint config: `eslint.config.mjs` (flat config format, ESLint v9+)
 - Extends: `eslint-config-next/core-web-vitals` + `eslint-config-next/typescript`
@@ -67,6 +80,7 @@
 - Semicolons: Required (ESLint default)
 
 **Backend (Python):**
+
 - Ruff for linting and formatting
 - Configuration in `pyproject.toml`:
   - Line length: 100
@@ -75,12 +89,14 @@
 ### Linting
 
 **Frontend:**
+
 - Tool: ESLint 9 (flat config)
 - Config file: `frontend/eslint.config.mjs`
 - Enforces Next.js best practices, TypeScript strict mode
 - Ignores: `.next/`, `out/`, `build/`, `next-env.d.ts`
 
 **Backend:**
+
 - Tool: Ruff
 - Config in `backend/pyproject.toml`
 - Manages both style and linting together
@@ -90,16 +106,19 @@
 ### Frontend
 
 **Order:**
+
 1. React and Next.js imports (`import { useState } from "react"`)
 2. External dependencies (`import { render, screen } from "@testing-library/react"`)
 3. Internal absolute imports using `@/` alias (`import { Watchlist } from "@/components/..."`)
 4. Type imports grouped separately (`import type { ... } from "@/lib/types"`)
 
 **Path Aliases:**
+
 - `@/*` → `./src/*` (configured in `tsconfig.json`)
 - All internal imports use `@/` for clarity and IDE support
 
 **Example from `Watchlist.tsx`:**
+
 ```typescript
 "use client";
 
@@ -111,12 +130,14 @@ import type { PriceTick, WatchlistItem } from "@/lib/types";
 ### Backend
 
 **Order:**
+
 1. Standard library imports (`import sqlite3`, `from pathlib import Path`)
 2. Third-party imports (`from fastapi import FastAPI`, `from pydantic import BaseModel`)
 3. Local/relative imports (`from db import repository`, `from market.factory import make_provider`)
 4. Use absolute imports from package root (no relative `..` imports where possible)
 
 **Example from `portfolio/trading.py`:**
+
 ```python
 from db import repository
 from market.interface import PriceUpdate
@@ -129,6 +150,7 @@ from portfolio.context import build_portfolio_context
 ### Frontend
 
 **Pattern: Try-catch with user-friendly messages:**
+
 ```typescript
 try {
   await onAdd(ticker);
@@ -140,12 +162,14 @@ try {
 ```
 
 **Guidelines:**
+
 - Catch all errors as `catch (err)` or `catch (err instanceof Error ? err.message : "...")`
 - Display user-friendly error messages in state (e.g., `error` state rendered as `<p className="text-down">{error}</p>`)
 - Clear errors on successful operations (`setError(null)`)
 - For network errors, show the fetch error message directly or a generic fallback
 
 **API error handling in `lib/api.ts`:**
+
 ```typescript
 if (!res.ok) {
   const body = await res.text().catch(() => "");
@@ -156,12 +180,14 @@ if (!res.ok) {
 ### Backend
 
 **Pattern: Custom exception classes for domain errors:**
+
 ```python
 class TradeError(Exception):
     """Validation failure. Message is safe to show directly to the user."""
 ```
 
 **Guidelines:**
+
 - Define domain-specific exception classes (e.g., `TradeError`) that inherit from `Exception`
 - Include docstring explaining when the error is raised
 - Catch and convert to HTTP responses in API routes:
@@ -175,6 +201,7 @@ class TradeError(Exception):
 - Use `raise ... from exc` for exception chaining to preserve tracebacks
 
 **Validation errors:**
+
 - Pydantic models handle request validation automatically via `BaseModel`
 - Invalid side, quantity, or missing fields raise `ValidationError` → 422 response automatically
 
@@ -185,6 +212,7 @@ class TradeError(Exception):
 **Framework:** `console` object (native browser logging)
 
 **Patterns:**
+
 - Minimal console output; use in development only via conditional logging
 - No structured logging library used
 - Most state is tracked via React state, not logs
@@ -194,12 +222,14 @@ class TradeError(Exception):
 **Framework:** Python's built-in `logging` module
 
 **Patterns:**
+
 - Each module creates a logger: `log = logging.getLogger(__name__)`
 - Used in market data providers (`market/simulator.py`, `market/massive.py`, `market/factory.py`)
 - Log messages for informational events (e.g., provider startup/shutdown)
 - No structured logging format configured; uses default format
 
 **Example from `market/factory.py`:**
+
 ```python
 import logging
 log = logging.getLogger(__name__)
@@ -233,17 +263,20 @@ log = logging.getLogger(__name__)
 ### Size
 
 **Frontend:**
+
 - React components: 20-100 lines typical. Extracted smaller pieces as separate components if logic grows.
 - Custom hooks: 20-40 lines. State and side effects clearly isolated.
 - Utility functions: Short, single-purpose (e.g., `request<T>(...)` for API calls, ~20 lines)
 
 **Backend:**
+
 - Functions: 10-50 lines typical. Multi-step processes broken into smaller functions.
 - Example: `execute_trade()` is ~50 lines covering buy/sell branches
 
 ### Parameters
 
 **Frontend:**
+
 - React components: Props passed as a destructured object (`{ items, priceHistory, selectedTicker, ... }`)
 - Functions: Use object params for 3+ arguments (e.g., API request options)
   ```typescript
@@ -251,6 +284,7 @@ log = logging.getLogger(__name__)
   ```
 
 **Backend:**
+
 - Functions: Named parameters with type hints
   ```python
   def execute_trade(ticker: str, side: str, quantity: float, prices: dict[str, PriceUpdate])
@@ -260,6 +294,7 @@ log = logging.getLogger(__name__)
 ### Return Values
 
 **Frontend:**
+
 - React components: Return JSX (no explicit return type in function signature, let TypeScript infer)
 - Functions: Use explicit return types
   ```typescript
@@ -269,6 +304,7 @@ log = logging.getLogger(__name__)
   ```
 
 **Backend:**
+
 - Functions: Include return type in signature
   ```python
   def execute_trade(...) -> dict:
@@ -283,11 +319,13 @@ log = logging.getLogger(__name__)
 ### Exports
 
 **Frontend:**
+
 - Named exports preferred (`export function Watchlist(...) { }`)
 - Default exports avoided (helps with tree-shaking and clarity)
 - Index files (`index.ts`) used rarely; direct imports preferred
 
 **Backend:**
+
 - Functions and classes exported at module level for import
 - `__init__.py` files minimal (often empty)
 - Public API exposed via `from module import function`
@@ -295,6 +333,7 @@ log = logging.getLogger(__name__)
 ### Barrel Files
 
 **Frontend:**
+
 - Not used. Each component imported directly from its file.
   ```typescript
   import { Watchlist } from "@/components/Watchlist";
@@ -302,11 +341,13 @@ log = logging.getLogger(__name__)
   ```
 
 **Backend:**
+
 - Not used in this codebase. Direct imports from modules.
 
 ## TypeScript Configuration
 
 **Key settings in `tsconfig.json`:**
+
 - `"strict": true` — Strict type checking enabled
 - `"jsx": "react-jsx"` — JSX handled by React 18+ transform
 - `"moduleResolution": "bundler"` — Next.js bundler resolution
@@ -315,6 +356,7 @@ log = logging.getLogger(__name__)
 - Path aliases: `"@/*": ["./src/*"]`
 
 **Implications:**
+
 - All values must be typed
 - `null` and `undefined` are distinct (no implicit union)
 - Function parameters must have types
