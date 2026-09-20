@@ -124,12 +124,73 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
+| MKT-01 | Phase 2 | Pending |
+| MKT-02 | Phase 2 | Pending |
+| MKT-03 | Phase 2 | Pending |
+| MKT-04 | Phase 2 | Pending |
+| MKT-05 | Phase 2 | Pending |
+| MKT-06 | Phase 2 | Pending |
+| MKT-07 | Phase 2 | Pending |
+| MKT-08 | Phase 2 | Pending |
+| STRM-01 | Phase 2 | Pending |
+| STRM-02 | Phase 2 | Pending |
+| STRM-03 | Phase 2 | Pending |
+| DB-01 | Phase 1 | Pending |
+| DB-02 | Phase 1 | Pending |
+| DB-03 | Phase 1 | Pending |
+| DB-04 | Phase 1 | Pending |
+| PORT-01 | Phase 4 | Pending |
+| PORT-02 | Phase 4 | Pending |
+| PORT-03 | Phase 4 | Pending |
+| PORT-04 | Phase 4 | Pending |
+| PORT-05 | Phase 4 | Pending |
+| PORT-06 | Phase 4 | Pending |
+| PORT-07 | Phase 4 | Pending |
+| PORT-08 | Phase 4 | Pending |
+| PORT-09 | Phase 4 | Pending |
+| WATCH-01 | Phase 3 | Pending |
+| WATCH-02 | Phase 3 | Pending |
+| WATCH-03 | Phase 3 | Pending |
+| WATCH-04 | Phase 3 | Pending |
+| CHAT-01 | Phase 5 | Pending |
+| CHAT-02 | Phase 5 | Pending |
+| CHAT-03 | Phase 5 | Pending |
+| CHAT-04 | Phase 5 | Pending |
+| CHAT-05 | Phase 5 | Pending |
+| CHAT-06 | Phase 5 | Pending |
+| CHAT-07 | Phase 5 | Pending |
+| CHAT-08 | Phase 5 | Pending |
+| SYS-01 | Phase 1 | Pending |
+| UI-01 | Phase 4 | Pending |
+| UI-02 | Phase 2 | Pending |
+| UI-03 | Phase 2 | Pending |
+| UI-04 | Phase 2 | Pending |
+| UI-05 | Phase 3 | Pending |
+| UI-06 | Phase 4 | Pending |
+| UI-07 | Phase 4 | Pending |
+| UI-08 | Phase 4 | Pending |
+| UI-09 | Phase 4 | Pending |
+| UI-10 | Phase 5 | Pending |
+| UI-11 | Phase 3 | Pending |
+| UI-12 | Phase 2 | Pending |
+| UI-13 | Phase 2 | Pending |
+| DEP-01 | Phase 1 | Pending |
+| DEP-02 | Phase 1 | Pending |
+| DEP-03 | Phase 1 | Pending |
+| DEP-04 | Phase 1 | Pending |
+| DEP-05 | Phase 1 | Pending |
+| TEST-01 | Phase 2 | Pending |
+| TEST-02 | Phase 4 | Pending |
+| TEST-03 | Phase 5 | Pending |
+| TEST-04 | Phase 6 | Pending |
+| TEST-05 | Phase 6 | Pending |
+| TEST-06 | Phase 6 | Pending |
 
 **Coverage:**
 - v1 requirements: 61 total
-- Mapped to phases: 0
-- Unmapped: 61 ⚠️
+- Mapped to phases: 61
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-09-20*
-*Last updated: 2026-09-20 after initial definition*
+*Last updated: 2026-09-20 after roadmap creation*
