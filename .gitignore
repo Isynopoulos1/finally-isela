@@ -215,3 +215,6 @@ __marimo__/
 
 # Playwright MCP session artifacts (screenshots, logs)
 .playwright-mcp/
+
+# GSD generated state mirror (not committed by GSD itself)
+.planning/state.json
